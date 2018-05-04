@@ -28,7 +28,6 @@ categories = [
     "ship",
     "corn"
 ]
-trainingEpochs = 20
 
 # Get the documentIDs for all categories
 arrTrainingFileNames = list(filter(lambda fileName : fileName.startswith("training/"), reuters.fileids()))
@@ -56,7 +55,7 @@ outputTesting = multiLabelBinarizer.transform([
 def buildMultilabelClassificationPipeline(classifier):
     return Pipeline([
         ("Vectorize inputs into tf-idf form.", TfidfVectorizer(analyzer='word', stop_words='english', lowercase=True)),
-        ("Chi^2 Feature selection", SelectPercentile(chi2, percentile=30)),
+        ("Chi^2 Feature selection", SelectPercentile(chi2, percentile=20)),
         ("Classifier", OneVsRestClassifier(classifier))
     ])
 
@@ -77,7 +76,7 @@ def evaluatePipeline(pipeline, pipelineName):
 pipelineNaiveBayes = buildMultilabelClassificationPipeline(MultinomialNB())
 evaluatePipeline(pipelineNaiveBayes, "Naive Bayes")
 
-pipelineKNeighborsClassifier = buildMultilabelClassificationPipeline(KNeighborsClassifier(10))
+pipelineKNeighborsClassifier = buildMultilabelClassificationPipeline(KNeighborsClassifier(4))
 evaluatePipeline(pipelineKNeighborsClassifier, "K Neighbors")
 
 pipelineLinearSVC = buildMultilabelClassificationPipeline(LinearSVC())
